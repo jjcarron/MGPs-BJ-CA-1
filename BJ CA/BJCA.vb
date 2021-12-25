@@ -1,5 +1,5 @@
 Imports BJ_CA.BJCAShared
-
+Imports Microsoft.Office.Interop
 <Serializable()> Public Class BJCA
 
 #Region " Declarations "

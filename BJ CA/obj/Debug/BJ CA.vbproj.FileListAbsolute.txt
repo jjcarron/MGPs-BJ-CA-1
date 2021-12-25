@@ -38,3 +38,19 @@ C:\Users\Anon\Documents\Visual Studio 2008\Projects\BJ CA\BJ CA\obj\Debug\BJ_CA.
 C:\Users\Anon\Documents\Visual Studio 2008\Projects\BJ CA\BJ CA\obj\Debug\BJ_CA.BJCASmallRealTimeForm.resources
 C:\Users\Anon\Documents\Visual Studio 2008\Projects\BJ CA\BJ CA\obj\Debug\BJ_CA.BJCATextForm.resources
 C:\Users\Anon\Documents\Visual Studio 2008\Projects\BJ CA\BJ CA\obj\Debug\BJ CA.vbproj.GenerateResource.Cache
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ CA.vbproj.ResolveComReference.cache
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCAAboutForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCAMainForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCARealtimeForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCARenameForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCAResultsForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCASmallRealTimeForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ_CA.BJCATextForm.resources
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ CA.vbproj.GenerateResource.cache
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ CA.vbproj.CoreCompileInputs.cache
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ CA.exe
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ CA.xml
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\obj\Debug\BJ CA.pdb
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\bin\BJ CA.exe
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\bin\BJ CA.pdb
+E:\Users\jjcarron\source\repos\MGPs-BJ-CA\BJ CA\bin\BJ CA.xml
