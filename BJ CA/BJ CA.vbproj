@@ -194,9 +194,8 @@
     <Compile Include="BJCAHandClasses.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\BJCAMainForm.vb">
+    <Compile Include="BJCAMainForm.vb">
       <SubType>Form</SubType>
-      <Link>BJCAMainForm.vb</Link>
     </Compile>
     <Compile Include="BJCARealtimeForm.vb">
       <SubType>Form</SubType>
@@ -235,9 +234,8 @@
     <EmbeddedResource Include="BJCAAboutForm.resx">
       <DependentUpon>BJCAAboutForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\BJCAMainForm.resx">
+    <EmbeddedResource Include="BJCAMainForm.resx">
       <DependentUpon>BJCAMainForm.vb</DependentUpon>
-      <Link>BJCAMainForm.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="BJCARealtimeForm.resx">
       <DependentUpon>BJCARealtimeForm.vb</DependentUpon>

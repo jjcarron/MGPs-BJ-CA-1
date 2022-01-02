@@ -11386,7 +11386,7 @@ Public Class BJCAMainForm
         If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             GetFormForcedShoe()
             SaveObjectFile(sfd.FileName, FormRules.ForcedShoe)
-            SaveMyShoeFile()
+            SaveMyShoeFile() 'just for test purposes
             FormRules.FileNames.ForcedShoeFileName = sfd.FileName
             FormRules.FileNames.DefaultPath = GetPath(sfd.FileName)
         End If
@@ -11414,9 +11414,37 @@ Public Class BJCAMainForm
         Next card
     End Sub
 
+    Private Function CardsLeft(myShoe As BJCAShoeClass) As Integer
+        Dim Cards As Integer
+        Dim i As Integer
+        For i = 1 To 10
+            Cards += myShoe.Cards(i)
+        Next
+        CardsLeft = Cards
+    End Function
+
+    Private Function getMyShoe() As BJCAShoeClass 'test
+        Dim myShoe As New BJCAShoeClass
+
+        myShoe.Cards(1) = 10
+        myShoe.Cards(2) = 14
+        myShoe.Cards(3) = 14
+        myShoe.Cards(4) = 14
+
+        myShoe.Cards(5) = 14
+        myShoe.Cards(6) = 12
+        myShoe.Cards(7) = 12
+        myShoe.Cards(8) = 12
+
+        myShoe.Cards(9) = 12
+        myShoe.Cards(10) = 40
+        RestoreSuits(myShoe)
+        myShoe.CardsLeft = CardsLeft(myShoe)
+        getMyShoe = myShoe
+
+    End Function
     Private Sub SaveMyShoeFile()
         Dim sfd As New SaveFileDialog
-        Dim myShoe As New BJCAShoeClass
 
         sfd.OverwritePrompt = True
         sfd.CheckPathExists = True
@@ -11426,23 +11454,9 @@ Public Class BJCAMainForm
         sfd.InitialDirectory = FormRules.FileNames.DefaultPath
         sfd.Filter = ("Forced Shoe Files (*" + FormRules.FileNames.ForcedShoeFileExt + ")|*" + FormRules.FileNames.ForcedShoeFileExt)
         sfd.ValidateNames = True
-        myShoe.Cards(1) = 1
-        myShoe.Cards(2) = 2
-        myShoe.Cards(3) = 3
-        myShoe.Cards(4) = 4
-
-        myShoe.Cards(5) = 5
-        myShoe.Cards(6) = 6
-        myShoe.Cards(7) = 7
-        myShoe.Cards(8) = 8
-
-        myShoe.Cards(9) = 9
-        myShoe.Cards(10) = 10
-        RestoreSuits(myShoe)
-
 
         If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            SaveObjectFile(sfd.FileName, myShoe)
+            SaveObjectFile(sfd.FileName, getMyShoe())
 
             'FormRules.FileNames.ForcedShoeFileName = sfd.FileName
             FormRules.FileNames.DefaultPath = GetPath(sfd.FileName)
