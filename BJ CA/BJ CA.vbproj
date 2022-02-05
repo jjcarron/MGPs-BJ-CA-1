@@ -227,18 +227,27 @@
     <Compile Include="BJCATextForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="BJCA_JP2S_ExtensionsForm.Designer.vb">
+      <DependentUpon>BJCA_JP2S_ExtensionsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BJCA_JP2S_ExtensionsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TestClass.vb">
       <SubType>Code</SubType>
     </Compile>
     <Content Include="BJCA.ico" />
     <EmbeddedResource Include="BJCAAboutForm.resx">
       <DependentUpon>BJCAAboutForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="BJCAMainForm.resx">
       <DependentUpon>BJCAMainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="BJCARealtimeForm.resx">
       <DependentUpon>BJCARealtimeForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="BJCARenameForm.resx">
       <DependentUpon>BJCARenameForm.vb</DependentUpon>
@@ -251,6 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BJCATextForm.resx">
       <DependentUpon>BJCATextForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BJCA_JP2S_ExtensionsForm.resx">
+      <DependentUpon>BJCA_JP2S_ExtensionsForm.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="ManualNotes.vb">
       <SubType>Code</SubType>

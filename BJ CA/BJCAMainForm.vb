@@ -3087,7 +3087,7 @@ Public Class BJCAMainForm
         Me.Note2LabelBJTab.Name = "Note2LabelBJTab"
         Me.Note2LabelBJTab.Size = New System.Drawing.Size(327, 37)
         Me.Note2LabelBJTab.TabIndex = 160
-        Me.Note2LabelBJTab.Text = "*Note:  Suited BJ Must Win applies to both General and Suited Specific Ten Bonuse" & _
+        Me.Note2LabelBJTab.Text = "*Note:  Suited BJ Must Win applies to both General and Suited Specific Ten Bonuse" &
         "s"
         Me.Note2LabelBJTab.Visible = False
         '
@@ -4178,8 +4178,8 @@ Public Class BJCAMainForm
         Me.PairsRuleApplyLabelFSTab.Name = "PairsRuleApplyLabelFSTab"
         Me.PairsRuleApplyLabelFSTab.Size = New System.Drawing.Size(307, 64)
         Me.PairsRuleApplyLabelFSTab.TabIndex = 7
-        Me.PairsRuleApplyLabelFSTab.Text = "*Note: Table Total based rules will not apply to pairs and only exact match ""Othe" & _
-        "r"" rules will.  AA/22 pairs will assume to have a secondary Hit strategy if assi" & _
+        Me.PairsRuleApplyLabelFSTab.Text = "*Note: Table Total based rules will not apply to pairs and only exact match ""Othe" &
+        "r"" rules will.  AA/22 pairs will assume to have a secondary Hit strategy if assi" &
         "gned to P."
         Me.PairsRuleApplyLabelFSTab.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -5284,6 +5284,8 @@ Public Class BJCAMainForm
     Private Sub CalculateNow()
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
+        Dim JP2S_Extensions As New BJCA_JP2S_ExtensionsForm
+        JP2S_Extensions.ShowDialog()
 
         '       Try
         GetFormRules()
@@ -6018,7 +6020,7 @@ Public Class BJCAMainForm
             .SaveDPDictionary = FormRules.General.SaveDPDictionary
 
             .OutputPath = FormRules.FileNames.OutputPath
-            .ExcelFilePath = GetPath(INIPath) + "MGPs BJ CA Results.xls"
+            .ExcelFilePath = GetPath(INIPath) + "MGPs BJ CA Results.xlsx"
             .ProbsPath = ProbsPath
 
         End With

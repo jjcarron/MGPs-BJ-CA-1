@@ -1,30 +1,30 @@
-    'Finding "My Documents"
-    '   sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
-    'Including "All Files
-    '   ofd.Filter = ("Test files (*.test)|*.test|All files (*.*)|*.*")
+'Finding "My Documents"
+'   sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+'Including "All Files
+'   ofd.Filter = ("Test files (*.test)|*.test|All files (*.*)|*.*")
 
 
-        '        Dim pform As New BJCAProgressForm
+'        Dim pform As New BJCAProgressForm
 
-        '        pform.Visible = True
-        '        pform.PBarPForm.Minimum = 1
-        '        pform.PBarPForm.Maximum = NumPHands
-        '        pform.PBarPForm.Text = "Computing Stand Values"
-        '            pform.PBarPForm.PerformStep()
-        '        pform.Visible = False
+'        pform.Visible = True
+'        pform.PBarPForm.Minimum = 1
+'        pform.PBarPForm.Maximum = NumPHands
+'        pform.PBarPForm.Text = "Computing Stand Values"
+'            pform.PBarPForm.PerformStep()
+'        pform.Visible = False
 
 
-        '       Dim oexcel As New Excel.Application
-        '       Dim oexcelbook As Excel.Workbook
-        '       Dim oexcelsheet As Excel.Worksheet
+'       Dim oexcel As New Excel.Application
+'       Dim oexcelbook As Excel.Workbook
+'       Dim oexcelsheet As Excel.Worksheet
 
-        '        oexcelbook = oexcel.Workbooks.Open("C:\Documents and Settings\Anon\My Documents\Blackjack\VB\BJ CA.xls", , False)
-        '        oexcelsheet = oexcelbook.Worksheets("Rules")
-        '        oexcelsheet.Select()
-        '        oexcelsheet.Range("A30").Formula = "Finally!!!"
-        '        oexcel.Visible = True
-        '        oexcelbook.Close()
-        '        oexcel.Quit()
+'        oexcelbook = oexcel.Workbooks.Open("C:\Documents and Settings\Anon\My Documents\Blackjack\VB\BJ CA.xlsx", , False)
+'        oexcelsheet = oexcelbook.Worksheets("Rules")
+'        oexcelsheet.Select()
+'        oexcelsheet.Range("A30").Formula = "Finally!!!"
+'        oexcel.Visible = True
+'        oexcelbook.Close()
+'        oexcel.Quit()
 
 'Change Excel Cell Color
 '        worksheet.Range("A1").Interior.Color = RGB(ColorTable.C(1).R, ColorTable.C(1).G, ColorTable.C(1).B)
@@ -32,9 +32,9 @@
 
 
 
-        'Now we need to fill in any strategies that may be overlooked because
-        '    of post-split strategy changes
-        For Total = 4 To 21
+'Now we need to fill in any strategies that may be overlooked because
+'    of post-split strategy changes
+For Total = 4 To 21
             For Soft = 0 To 1
                 If cStrat.StratTD(Total, Soft).Strat(upcard) = C.Strat.None Then
                     'First see if any hands actually exist with the Total/Soft
