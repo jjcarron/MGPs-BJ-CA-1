@@ -5285,7 +5285,11 @@ Public Class BJCAMainForm
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
         Dim JP2S_Extensions As New BJCA_JP2S_ExtensionsForm
-        JP2S_Extensions.ShowDialog()
+
+        If JP2S_Extensions.Exists() Then
+            JP2S_Extensions.ShowDialog()
+        End If
+
 
         '       Try
         GetFormRules()
