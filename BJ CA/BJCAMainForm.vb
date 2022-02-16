@@ -2,7 +2,8 @@ Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.IO
 Imports BJ_CA.BJCAShared
 Imports System.Diagnostics.Process
-
+Imports BJ_CA.GameHistoryFile
+Imports System.Text.RegularExpressions
 Public Class BJCAMainForm
     Inherits System.Windows.Forms.Form
 
@@ -5285,26 +5286,37 @@ Public Class BJCAMainForm
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
         Dim JP2S_Extensions As New BJCA_JP2S_ExtensionsForm
+        Dim ExtResult As DialogResult
+        Dim ghf As New GameHistoryFile
 
         If JP2S_Extensions.Exists() Then
-            JP2S_Extensions.ShowDialog()
+            ExtResult = JP2S_Extensions.ShowDialog()
         End If
 
+        If ExtResult = DialogResult.Abort Then
+            'evaluate file
+            ghf = JP2S_Extensions.HistoryFile
+            If ghf IsNot Nothing Then
+                ProcessHistoryfile(ghf)
+            Else
+                MsgBox ("No valid file provided", vbOKOnly, "Warning")
+            End If
+        Else
+            'Try
+            GetFormRules()
+            Results.BJCA(Rules)
 
-        '       Try
-        GetFormRules()
-        Results.BJCA(Rules)
+            ResultsForm.FormRules.FileNames = FormRules.FileNames
+            ResultsForm.Results = Results
+            ResultsForm.FormRules = CloneObject(FormRules)
+            ResultsForm.LoadFormResults()
 
-        ResultsForm.FormRules.FileNames = FormRules.FileNames
-        ResultsForm.Results = Results
-        ResultsForm.FormRules = CloneObject(FormRules)
-        ResultsForm.LoadFormResults()
-
-        ResultsForm.Show()
-        '        Catch
-        '        MsgBox("An error has occurred - please restart.")
-        '        Me.Close()
-        '        End Try
+            ResultsForm.Show()
+            '        Catch
+            '        MsgBox("An error has occurred - please restart.")
+            '        Me.Close()
+            '        End Try
+        End If
     End Sub
 
     Private Sub InitializeBJCAForm()
@@ -11392,83 +11404,12 @@ Public Class BJCAMainForm
         If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             GetFormForcedShoe()
             SaveObjectFile(sfd.FileName, FormRules.ForcedShoe)
-            SaveMyShoeFile() 'just for test purposes
             FormRules.FileNames.ForcedShoeFileName = sfd.FileName
             FormRules.FileNames.DefaultPath = GetPath(sfd.FileName)
         End If
         sfd.Dispose()
     End Sub
 
-    Private Sub RestoreSuit(ByRef shoe As BJCAShoeClass, ByVal card As Integer)
-        Dim defaultnum As Integer
-        Dim suit As Integer
-        defaultnum = shoe.Cards(card) \ 4
-        For suit = 0 To 2
-            If shoe.Cards(card) Mod 4 > suit Then
-                shoe.Suits(card, suit) = defaultnum + 1
-            Else
-                shoe.Suits(card, suit) = defaultnum
-            End If
-        Next suit
-        shoe.Suits(card, 3) = defaultnum
-    End Sub
-    Private Sub RestoreSuits(ByRef shoe As BJCAShoeClass)
-        Dim card As Integer
-
-        For card = 1 To 10
-            RestoreSuit(shoe, card)
-        Next card
-    End Sub
-
-    Private Function CardsLeft(myShoe As BJCAShoeClass) As Integer
-        Dim Cards As Integer
-        Dim i As Integer
-        For i = 1 To 10
-            Cards += myShoe.Cards(i)
-        Next
-        CardsLeft = Cards
-    End Function
-
-    Private Function getMyShoe() As BJCAShoeClass 'test
-        Dim myShoe As New BJCAShoeClass
-
-        myShoe.Cards(1) = 10
-        myShoe.Cards(2) = 14
-        myShoe.Cards(3) = 14
-        myShoe.Cards(4) = 14
-
-        myShoe.Cards(5) = 14
-        myShoe.Cards(6) = 12
-        myShoe.Cards(7) = 12
-        myShoe.Cards(8) = 12
-
-        myShoe.Cards(9) = 12
-        myShoe.Cards(10) = 40
-        RestoreSuits(myShoe)
-        myShoe.CardsLeft = CardsLeft(myShoe)
-        getMyShoe = myShoe
-
-    End Function
-    Private Sub SaveMyShoeFile()
-        Dim sfd As New SaveFileDialog
-
-        sfd.OverwritePrompt = True
-        sfd.CheckPathExists = True
-        sfd.AddExtension = True
-        sfd.DefaultExt = FormRules.FileNames.ForcedShoeFileExt
-        sfd.FileName = "myShoe"
-        sfd.InitialDirectory = FormRules.FileNames.DefaultPath
-        sfd.Filter = ("Forced Shoe Files (*" + FormRules.FileNames.ForcedShoeFileExt + ")|*" + FormRules.FileNames.ForcedShoeFileExt)
-        sfd.ValidateNames = True
-
-        If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            SaveObjectFile(sfd.FileName, getMyShoe())
-
-            'FormRules.FileNames.ForcedShoeFileName = sfd.FileName
-            FormRules.FileNames.DefaultPath = GetPath(sfd.FileName)
-        End If
-        sfd.Dispose()
-    End Sub
 
     Private Sub LoadForcedShoeFile(Optional ByVal getName As Boolean = True)
         'Use defaults if file is present or it is not valid
@@ -11849,8 +11790,110 @@ Public Class BJCAMainForm
 
 #End Region
 
+#Region "JP2S Extensions"
 
+    Private Sub InitializeAnalysis()
+        Dim Test As Boolean
+        ForcedShoeCheckMTab.Checked = True
+        Test = FormRules.General.UseForcedShoe
+        FormRules.General.NDecks = 8
+        GetFormRules()
+    End Sub
+    Private Sub NewShoe()
+        FormRules.ForcedShoe.Reset(FormRules.General.NDecks)
 
+    End Sub
+
+    Private Sub ProcessShoe(ghf As GameHistoryFile)
+        NewShoe()
+    End Sub
+    Sub ProcessHistoryfile(ghf As GameHistoryFile, Optional line As Long = 2)
+        Dim Table As String
+        Dim shoeCode As Long
+        Dim RoundId As Long
+        Dim cards As MatchCollection
+        Table = ""
+        shoeCode = 0
+        RoundId = 0
+        cards = Nothing
+        InitializeAnalysis()
+        ghf.getline(2, Table, shoeCode, RoundId, cards)
+
+    End Sub
+#End Region
+
+#Region "Test JP2S"
+    Private Sub RestoreSuit(ByRef shoe As BJCAShoeClass, ByVal card As Integer)
+        Dim defaultnum As Integer
+        Dim suit As Integer
+        defaultnum = shoe.Cards(card) \ 4
+        For suit = 0 To 2
+            If shoe.Cards(card) Mod 4 > suit Then
+                shoe.Suits(card, suit) = defaultnum + 1
+            Else
+                shoe.Suits(card, suit) = defaultnum
+            End If
+        Next suit
+        shoe.Suits(card, 3) = defaultnum
+    End Sub
+    Private Sub RestoreSuits(ByRef shoe As BJCAShoeClass)
+        Dim card As Integer
+
+        For card = 1 To 10
+            RestoreSuit(shoe, card)
+        Next card
+    End Sub
+
+    Private Function CardsLeft(myShoe As BJCAShoeClass) As Integer
+        Dim Cards As Integer
+        Dim i As Integer
+        For i = 1 To 10
+            Cards += myShoe.Cards(i)
+        Next
+        CardsLeft = Cards
+    End Function
+
+    Private Function getMyShoe() As BJCAShoeClass 'test
+        Dim myShoe As New BJCAShoeClass
+
+        myShoe.Cards(1) = 10
+        myShoe.Cards(2) = 14
+        myShoe.Cards(3) = 14
+        myShoe.Cards(4) = 14
+
+        myShoe.Cards(5) = 14
+        myShoe.Cards(6) = 12
+        myShoe.Cards(7) = 12
+        myShoe.Cards(8) = 12
+
+        myShoe.Cards(9) = 12
+        myShoe.Cards(10) = 40
+        RestoreSuits(myShoe)
+        myShoe.CardsLeft = CardsLeft(myShoe)
+        getMyShoe = myShoe
+
+    End Function
+    Private Sub SaveMyShoeFile()
+        Dim sfd As New SaveFileDialog
+
+        sfd.OverwritePrompt = True
+        sfd.CheckPathExists = True
+        sfd.AddExtension = True
+        sfd.DefaultExt = FormRules.FileNames.ForcedShoeFileExt
+        sfd.FileName = "myShoe"
+        sfd.InitialDirectory = FormRules.FileNames.DefaultPath
+        sfd.Filter = ("Forced Shoe Files (*" + FormRules.FileNames.ForcedShoeFileExt + ")|*" + FormRules.FileNames.ForcedShoeFileExt)
+        sfd.ValidateNames = True
+
+        If sfd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            SaveObjectFile(sfd.FileName, getMyShoe())
+
+            'FormRules.FileNames.ForcedShoeFileName = sfd.FileName
+            FormRules.FileNames.DefaultPath = GetPath(sfd.FileName)
+        End If
+        sfd.Dispose()
+    End Sub
+#End Region
 
 
 

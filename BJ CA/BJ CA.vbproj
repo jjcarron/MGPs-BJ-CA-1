@@ -233,6 +233,8 @@
     <Compile Include="BJCA_JP2S_ExtensionsForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Game.vb" />
+    <Compile Include="GameHistoryFile.vb" />
     <Compile Include="TestClass.vb">
       <SubType>Code</SubType>
     </Compile>
