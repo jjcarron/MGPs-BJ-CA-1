@@ -5287,7 +5287,7 @@ Public Class BJCAMainForm
         Dim ResultsForm As New BJCAResultsForm
         Dim JP2S_Extensions As New BJCA_JP2S_ExtensionsForm
         Dim ExtResult As DialogResult
-        Dim ghf As New GameHistoryFile
+        Dim ghf As GameHistoryFile
 
         If JP2S_Extensions.Exists() Then
             ExtResult = JP2S_Extensions.ShowDialog()
@@ -11793,32 +11793,90 @@ Public Class BJCAMainForm
 #Region "JP2S Extensions"
 
     Private Sub InitializeAnalysis()
-        Dim Test As Boolean
-        ForcedShoeCheckMTab.Checked = True
-        Test = FormRules.General.UseForcedShoe
-        FormRules.General.NDecks = 8
         GetFormRules()
+        FormRules.General.UseForcedShoe = True
+        FormRules.General.NDecks = 8
     End Sub
     Private Sub NewShoe()
         FormRules.ForcedShoe.Reset(FormRules.General.NDecks)
-
     End Sub
 
     Private Sub ProcessShoe(ghf As GameHistoryFile)
         NewShoe()
     End Sub
-    Sub ProcessHistoryfile(ghf As GameHistoryFile, Optional line As Long = 2)
+
+    Private Sub DealCards(cards As MatchCollection)
+        Dim card As Match
+        Dim suitStr As String
+        Dim CardStr As String
+
+        Dim CardValue As Integer
+        Dim suit As BJCAGlobalsClass.Suits
+
+        For Each card In cards
+            suitStr = card.Groups(1).Value
+            Select Case suitStr
+                Case "S"
+                    suit = BJCAGlobalsClass.Suits.Spades
+                Case "H"
+                    suit = BJCAGlobalsClass.Suits.Hearts
+                Case "D"
+                    suit = BJCAGlobalsClass.Suits.Diamonds
+                Case "C"
+                    suit = BJCAGlobalsClass.Suits.Clubs
+            End Select
+
+            CardStr = card.Groups(2).Value
+            Select Case CardStr
+                Case "J", "Q", "K", "10"
+                    CardValue = 10
+                Case "A"
+                    CardValue = 1
+                Case Else
+                    CardValue = Convert.ToInt32(CardStr)
+            End Select
+            FormRules.ForcedShoe.DealSuited(CardValue, suit)
+        Next
+
+
+    End Sub
+
+    Private Sub ProcessHistoryfile(ghf As GameHistoryFile, Optional Row As Long = 15, Optional NumberOfShoe As Long = 5)
         Dim Table As String
         Dim shoeCode As Long
         Dim RoundId As Long
         Dim cards As MatchCollection
+        Dim i As Long
+        Dim Results As BJCA
         Table = ""
         shoeCode = 0
         RoundId = 0
         cards = Nothing
         InitializeAnalysis()
-        ghf.getline(2, Table, shoeCode, RoundId, cards)
 
+        ghf.WriteTitles("TDS NetEV", "2CDS NetEV", "CDS NetEV", "FS NetEV")
+        'get the Row of the next shoe
+        Do
+            ghf.getRow(Row, Table, shoeCode, RoundId, cards)
+            Row = Row + 1
+        Loop Until shoeCode > 0
+        Row = Row - 1
+
+        'process shoes
+        For i = 1 To NumberOfShoe
+            FormRules.ForcedShoe.Reset(FormRules.General.NDecks)
+            Do
+                DealCards(cards)
+                'evaluate
+                Results = New BJCA
+                Rules.Shoe = CloneObject(FormRules.ForcedShoe)
+                Results.BJCA(Rules)
+                ghf.WriteNetEV(Row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV)
+                ghf.getRow(Row, Table, shoeCode, RoundId, cards)
+                Row = Row + 1
+            Loop Until shoeCode > 0
+        Next i
+        ghf.SaveCloseFile()
     End Sub
 #End Region
 
