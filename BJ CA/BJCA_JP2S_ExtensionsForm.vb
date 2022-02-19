@@ -9,6 +9,8 @@ Public Class BJCA_JP2S_ExtensionsForm
     Dim Aborted As Boolean
     Dim Shoe As Long
     Dim Row As Long
+    Dim CanClose As Boolean
+    Dim InProgress As Boolean
 
     Dim ExtensionResult As eExtensions
 
@@ -27,39 +29,21 @@ Public Class BJCA_JP2S_ExtensionsForm
     End Sub
 
     Private Sub Read_Click(sender As Object, e As EventArgs) Handles Read.Click
-        Dim ofd As New OpenFileDialog
-
-        Abort.Enabled = True
-        Ok.Enabled = False
-
-        ofd.CheckFileExists = True
-        ofd.CheckPathExists = True
-        ofd.AddExtension = True
-        ofd.DefaultExt = ".xlsx"
-        ofd.FileName = "Games.xlsx"
-        ofd.InitialDirectory = My.Computer.FileSystem.CurrentDirectory + "\JP2S\"
-        ofd.Filter = "Game Files (*.xlsx)|*.xlsx"
-        ofd.ValidateNames = True
-        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            'load file here
-            'MsgBox("The file: " + GetFileName(ofd.FileName) + " is a Game file.")
-
-            fileOK = ghf.OpenFile(ofd.FileName)
-
-            If fileOK Then
-                'process file here
-                'LoadFormForcedShoe()
-            Else
-                MsgBox("The file: " + GetFileName(ofd.FileName) + " is not a valid Forced Shoe file.")
-            End If
-        End If
-        ofd.Dispose()
         ExtensionResult = eExtensions.processHistoryFile
+        StartProcessing()
+        'wait for selection
+        Do While InProgress
+            ' wait for answer
+            Threading.Thread.Sleep(100)
+            Application.DoEvents()
+        Loop
+        EndProcessing()
     End Sub
 
     Private Sub Abort_Click(sender As Object, e As EventArgs) Handles Abort.Click
         Aborted = True
         ExtensionResult = eExtensions.Abort
+        EndProcessing()
     End Sub
 
     Public ReadOnly Property HistoryFile As GameHistoryFile
@@ -86,5 +70,32 @@ Public Class BJCA_JP2S_ExtensionsForm
 
     Private Sub BJCA_JP2S_ExtensionsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Abort.Enabled = False
+        CanClose = True
     End Sub
+
+    Public Sub EndProcessing()
+        CanClose = True
+        Close_Button.Enabled = True
+        Abort.Enabled = False
+        Ok.Enabled = True
+    End Sub
+
+    Public Sub StartProcessing()
+        CanClose = False
+        Close_Button.Enabled = False
+        Abort.Enabled = True
+        Ok.Enabled = False
+    End Sub
+
+    Public Function openHistoryFile(fullPath As String) As Boolean
+        openHistoryFile = ghf.OpenFile(fullPath)
+    End Function
+    Private Sub Close_Button_Click(sender As Object, e As EventArgs) Handles Close_Button.Click
+        Close()
+    End Sub
+
+    Public Sub setInProgress(InP As Boolean)
+        InProgress = InP
+    End Sub
+
 End Class

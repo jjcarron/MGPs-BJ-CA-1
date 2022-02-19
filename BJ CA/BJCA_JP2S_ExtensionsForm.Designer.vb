@@ -25,6 +25,7 @@ Partial Class BJCA_JP2S_ExtensionsForm
         Me.Ok = New System.Windows.Forms.Button()
         Me.Read = New System.Windows.Forms.Button()
         Me.Abort = New System.Windows.Forms.Button()
+        Me.Close_Button = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Ok
@@ -47,18 +48,28 @@ Partial Class BJCA_JP2S_ExtensionsForm
         '
         'Abort
         '
-        Me.Abort.Location = New System.Drawing.Point(636, 401)
+        Me.Abort.Location = New System.Drawing.Point(636, 145)
         Me.Abort.Name = "Abort"
         Me.Abort.Size = New System.Drawing.Size(137, 23)
         Me.Abort.TabIndex = 0
         Me.Abort.Text = "Abort File Processing"
         Me.Abort.UseVisualStyleBackColor = True
         '
+        'Close_Button
+        '
+        Me.Close_Button.Location = New System.Drawing.Point(636, 398)
+        Me.Close_Button.Name = "Close_Button"
+        Me.Close_Button.Size = New System.Drawing.Size(137, 23)
+        Me.Close_Button.TabIndex = 0
+        Me.Close_Button.Text = "Close"
+        Me.Close_Button.UseVisualStyleBackColor = True
+        '
         'BJCA_JP2S_ExtensionsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Controls.Add(Me.Close_Button)
         Me.Controls.Add(Me.Abort)
         Me.Controls.Add(Me.Read)
         Me.Controls.Add(Me.Ok)
@@ -71,4 +82,5 @@ Partial Class BJCA_JP2S_ExtensionsForm
     Friend WithEvents Ok As Button
     Friend WithEvents Read As Button
     Friend WithEvents Abort As Button
+    Friend WithEvents Close_Button As Button
 End Class

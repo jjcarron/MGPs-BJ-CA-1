@@ -150,7 +150,7 @@ Imports Microsoft.Office.Interop
 
 #End Region
 
-    Public Sub BJCA(ByVal newRules As BJCARulesClass, Optional ByRef dpDict As BJCADealerProbsDictionary = Nothing)
+    Public Function BJCA(ByVal newRules As BJCARulesClass, Optional ByRef dpDict As BJCADealerProbsDictionary = Nothing) As Boolean
         Dim tempBool As Boolean
         Dim i As Integer
         Dim j As Integer
@@ -201,7 +201,8 @@ Imports Microsoft.Office.Interop
 
         'If a Dealer Probs Dictionary is supplied, it is up to the sender to save it
         If (SaveDPDictionary And dpDict Is Nothing) Then tempBool = SaveDealerProbsFile(DealerProbs, ProbsPath, (StandOnSoft = 17), OriginalRules.DeckType)
-    End Sub
+        BJCA = True
+    End Function
 
 #Region " General Methods "
 

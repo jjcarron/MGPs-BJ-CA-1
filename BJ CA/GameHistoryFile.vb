@@ -56,7 +56,6 @@ Public Class GameHistoryFile
     Private Const FirtsColumn As Long = 7
     Public Sub WriteTitles(FirstcolumnTitle As String, Optional SecondColumnTitle As String = "", Optional thirdColumnTitle As String = "", Optional fourthColumnTitle As String = "")
         Dim column As Long
-        Dim R As Range
 
         column = FirtsColumn
 

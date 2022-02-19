@@ -4,7 +4,7 @@ Imports BJ_CA.BJCAShared
 Imports System.Diagnostics.Process
 Imports BJ_CA.GameHistoryFile
 Imports System.Text.RegularExpressions
-Imports System.Tasks
+Imports System.Threading.Tasks
 
 
 Public Class BJCAMainForm
@@ -5284,17 +5284,45 @@ Public Class BJCAMainForm
 #End Region
 
 #Region " Main Form General Methods "
+    Private Sub showJP2S_ExtensionDlg(ByRef JP2S_Extensions As BJCA_JP2S_ExtensionsForm)
+        JP2S_Extensions.ShowDialog()
+    End Sub
 
+    Private Function getGameHistoryFile(JP2S_Extensions As BJCA_JP2S_ExtensionsForm) As GameHistoryFile
+        Dim ofd As New OpenFileDialog
+        Dim ghf As New GameHistoryFile
+
+        ofd.CheckFileExists = True
+        ofd.CheckPathExists = True
+        ofd.AddExtension = True
+        ofd.DefaultExt = ".xlsx"
+        ofd.FileName = "Games.xlsx"
+        ofd.InitialDirectory = My.Computer.FileSystem.CurrentDirectory + "\JP2S\"
+        ofd.Filter = "Game Files (*.xlsx)|*.xlsx"
+        ofd.ValidateNames = True
+
+        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            If ghf.OpenFile(ofd.FileName) Then
+                getGameHistoryFile = ghf
+            End If
+        Else
+            MsgBox("The file: " + GetFileName(ofd.FileName) + " is not a valid Forced Shoe file.")
+        End If
+        ofd.Dispose()
+    End Function
     Private Sub CalculateNow()
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
         Dim JP2S_Extensions As New BJCA_JP2S_ExtensionsForm
         Dim ghf As GameHistoryFile
+        Dim jp2s_DlgTask As Task
 
         If JP2S_Extensions.Exists() Then
-            JP2S_Extensions.Show()
+            jp2s_DlgTask = New Task(Sub() showJP2S_ExtensionDlg(JP2S_Extensions))
+            jp2s_DlgTask.Start()
         End If
 
+        'wait for selection
         Do While JP2S_Extensions.Result = BJCA_JP2S_ExtensionsForm.eExtensions.undefined
             ' wait for answer
             Threading.Thread.Sleep(100)
@@ -5303,11 +5331,12 @@ Public Class BJCAMainForm
 
         Select Case JP2S_Extensions.Result
             Case BJCA_JP2S_ExtensionsForm.eExtensions.processHistoryFile
-
+                ghf = getGameHistoryFile(JP2S_Extensions)
                 'evaluate file
-                ghf = JP2S_Extensions.HistoryFile
                 If ghf IsNot Nothing Then
+                    JP2S_Extensions.setInProgress(True)
                     ProcessHistoryfile(ghf, JP2S_Extensions)
+                    JP2S_Extensions.setInProgress(False)
                 Else
                     MsgBox("No valid file provided", vbOKOnly, "Warning")
                 End If
@@ -5328,7 +5357,6 @@ Public Class BJCAMainForm
                 '        End Try
             Case Else
         End Select
-        JP2S_Extensions.Close()
     End Sub
 
     Private Sub InitializeBJCAForm()
@@ -11854,18 +11882,14 @@ Public Class BJCAMainForm
     End Sub
 
 
-
-
-
-
-    Private Async Sub ProcessHistoryfile(ghf As GameHistoryFile, JP2S_Extensions As BJCA_JP2S_ExtensionsForm, Optional Row As Long = 15, Optional NumberOfShoe As Long = 5)
+    Private Sub ProcessHistoryfile(ghf As GameHistoryFile, JP2S_Extensions As BJCA_JP2S_ExtensionsForm, Optional Row As Long = 15, Optional NumberOfShoe As Long = 5)
         Dim Table As String
         Dim shoeCode As Long
         Dim RoundId As Long
         Dim cards As MatchCollection
         Dim i As Long
-        Dim jp2s_Results As BJCA
-        'Dim jp2s_Task As New Task
+        Dim Results As BJCA
+
 
         Table = ""
         shoeCode = 0
@@ -11887,12 +11911,10 @@ Public Class BJCAMainForm
             Do
                 DealCards(cards)
                 'evaluate
-                jp2s_Results = New BJCA
                 Rules.Shoe = CloneObject(FormRules.ForcedShoe)
-                'Threading.Thread.
-                'Dim jp2s_Task As Threading.Thread = New Threading.Thread(New Threading.ThreadStart(AddressOf evaluate_Task))
-                'Await jp2s_Task
-                ghf.WriteNetEV(Row, jp2s_Results.TD.GameEVs.NetGameEV, jp2s_Results.TC.GameEVs.NetGameEV, jp2s_Results.Opt.GameEVs.NetGameEV, jp2s_Results.Opt.GameEVs.NetGameEV)
+                Results = New BJCA
+                Results.BJCA(Rules)
+                ghf.WriteNetEV(Row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV)
                 ghf.getRow(Row, Table, shoeCode, RoundId, cards)
                 Row = Row + 1
                 Application.DoEvents()
