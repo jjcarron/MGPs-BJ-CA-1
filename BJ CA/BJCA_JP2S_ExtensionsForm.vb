@@ -26,6 +26,7 @@ Public Class BJCA_JP2S_ExtensionsForm
     End Function
     Private Sub Ok_Click(sender As Object, e As EventArgs) Handles Ok.Click
         ExtensionResult = eExtensions.ignoreExtensions
+        Close()
     End Sub
 
     Private Sub Read_Click(sender As Object, e As EventArgs) Handles Read.Click
@@ -42,8 +43,8 @@ Public Class BJCA_JP2S_ExtensionsForm
 
     Private Sub Abort_Click(sender As Object, e As EventArgs) Handles Abort.Click
         Aborted = True
+        Abort.Enabled = False
         ExtensionResult = eExtensions.Abort
-        EndProcessing()
     End Sub
 
     Public ReadOnly Property HistoryFile As GameHistoryFile
@@ -73,17 +74,21 @@ Public Class BJCA_JP2S_ExtensionsForm
         CanClose = True
     End Sub
 
-    Public Sub EndProcessing()
+    Private Sub EndProcessing()
         CanClose = True
         Close_Button.Enabled = True
         Abort.Enabled = False
+        Read.Enabled = True
         Ok.Enabled = True
+        ExtensionResult = eExtensions.undefined
     End Sub
 
-    Public Sub StartProcessing()
+    Private Sub StartProcessing()
+        InProgress = True
         CanClose = False
         Close_Button.Enabled = False
         Abort.Enabled = True
+        Read.Enabled = False
         Ok.Enabled = False
     End Sub
 
@@ -94,8 +99,8 @@ Public Class BJCA_JP2S_ExtensionsForm
         Close()
     End Sub
 
-    Public Sub setInProgress(InP As Boolean)
-        InProgress = InP
+    Public Sub EndOfProcessing()
+        InProgress = False
     End Sub
 
 End Class

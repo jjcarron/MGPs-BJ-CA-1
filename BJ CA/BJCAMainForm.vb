@@ -5321,7 +5321,7 @@ Public Class BJCAMainForm
             jp2s_DlgTask = New Task(Sub() showJP2S_ExtensionDlg(JP2S_Extensions))
             jp2s_DlgTask.Start()
         End If
-
+Try_Again:
         'wait for selection
         Do While JP2S_Extensions.Result = BJCA_JP2S_ExtensionsForm.eExtensions.undefined
             ' wait for answer
@@ -5334,9 +5334,10 @@ Public Class BJCAMainForm
                 ghf = getGameHistoryFile(JP2S_Extensions)
                 'evaluate file
                 If ghf IsNot Nothing Then
-                    JP2S_Extensions.setInProgress(True)
+
                     ProcessHistoryfile(ghf, JP2S_Extensions)
-                    JP2S_Extensions.setInProgress(False)
+                    JP2S_Extensions.EndOfProcessing()
+                    GoTo Try_Again
                 Else
                     MsgBox("No valid file provided", vbOKOnly, "Warning")
                 End If
