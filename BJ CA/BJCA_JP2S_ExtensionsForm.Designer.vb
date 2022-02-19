@@ -24,31 +24,42 @@ Partial Class BJCA_JP2S_ExtensionsForm
     Private Sub InitializeComponent()
         Me.Ok = New System.Windows.Forms.Button()
         Me.Read = New System.Windows.Forms.Button()
+        Me.Abort = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Ok
         '
-        Me.Ok.Location = New System.Drawing.Point(698, 51)
+        Me.Ok.Location = New System.Drawing.Point(636, 51)
         Me.Ok.Name = "Ok"
-        Me.Ok.Size = New System.Drawing.Size(75, 23)
+        Me.Ok.Size = New System.Drawing.Size(137, 23)
         Me.Ok.TabIndex = 0
-        Me.Ok.Text = "Ok"
+        Me.Ok.Text = "Ignore Extensions"
         Me.Ok.UseVisualStyleBackColor = True
         '
         'Read
         '
-        Me.Read.Location = New System.Drawing.Point(698, 98)
+        Me.Read.Location = New System.Drawing.Point(636, 98)
         Me.Read.Name = "Read"
-        Me.Read.Size = New System.Drawing.Size(75, 23)
+        Me.Read.Size = New System.Drawing.Size(137, 23)
         Me.Read.TabIndex = 0
-        Me.Read.Text = "Read"
+        Me.Read.Text = "Process History File"
         Me.Read.UseVisualStyleBackColor = True
+        '
+        'Abort
+        '
+        Me.Abort.Location = New System.Drawing.Point(636, 401)
+        Me.Abort.Name = "Abort"
+        Me.Abort.Size = New System.Drawing.Size(137, 23)
+        Me.Abort.TabIndex = 0
+        Me.Abort.Text = "Abort File Processing"
+        Me.Abort.UseVisualStyleBackColor = True
         '
         'BJCA_JP2S_ExtensionsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Controls.Add(Me.Abort)
         Me.Controls.Add(Me.Read)
         Me.Controls.Add(Me.Ok)
         Me.Name = "BJCA_JP2S_ExtensionsForm"
@@ -59,4 +70,5 @@ Partial Class BJCA_JP2S_ExtensionsForm
 
     Friend WithEvents Ok As Button
     Friend WithEvents Read As Button
+    Friend WithEvents Abort As Button
 End Class

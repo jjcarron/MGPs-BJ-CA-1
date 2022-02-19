@@ -4,6 +4,9 @@ Imports BJ_CA.BJCAShared
 Imports System.Diagnostics.Process
 Imports BJ_CA.GameHistoryFile
 Imports System.Text.RegularExpressions
+Imports System.Tasks
+
+
 Public Class BJCAMainForm
     Inherits System.Windows.Forms.Form
 
@@ -5286,37 +5289,46 @@ Public Class BJCAMainForm
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
         Dim JP2S_Extensions As New BJCA_JP2S_ExtensionsForm
-        Dim ExtResult As DialogResult
         Dim ghf As GameHistoryFile
 
         If JP2S_Extensions.Exists() Then
-            ExtResult = JP2S_Extensions.ShowDialog()
+            JP2S_Extensions.Show()
         End If
 
-        If ExtResult = DialogResult.Abort Then
-            'evaluate file
-            ghf = JP2S_Extensions.HistoryFile
-            If ghf IsNot Nothing Then
-                ProcessHistoryfile(ghf)
-            Else
-                MsgBox ("No valid file provided", vbOKOnly, "Warning")
-            End If
-        Else
-            'Try
-            GetFormRules()
-            Results.BJCA(Rules)
+        Do While JP2S_Extensions.Result = BJCA_JP2S_ExtensionsForm.eExtensions.undefined
+            ' wait for answer
+            Threading.Thread.Sleep(100)
+            Application.DoEvents()
+        Loop
 
-            ResultsForm.FormRules.FileNames = FormRules.FileNames
-            ResultsForm.Results = Results
-            ResultsForm.FormRules = CloneObject(FormRules)
-            ResultsForm.LoadFormResults()
+        Select Case JP2S_Extensions.Result
+            Case BJCA_JP2S_ExtensionsForm.eExtensions.processHistoryFile
 
-            ResultsForm.Show()
-            '        Catch
-            '        MsgBox("An error has occurred - please restart.")
-            '        Me.Close()
-            '        End Try
-        End If
+                'evaluate file
+                ghf = JP2S_Extensions.HistoryFile
+                If ghf IsNot Nothing Then
+                    ProcessHistoryfile(ghf, JP2S_Extensions)
+                Else
+                    MsgBox("No valid file provided", vbOKOnly, "Warning")
+                End If
+
+            Case BJCA_JP2S_ExtensionsForm.eExtensions.ignoreExtensions
+                'Try
+                GetFormRules()
+                Results.BJCA(Rules)
+
+                ResultsForm.FormRules.FileNames = FormRules.FileNames
+                ResultsForm.Results = Results
+                ResultsForm.FormRules = CloneObject(FormRules)
+                ResultsForm.LoadFormResults()
+                ResultsForm.Show()
+                '        Catch
+                '        MsgBox("An error has occurred - please restart.")
+                '        Me.Close()
+                '        End Try
+            Case Else
+        End Select
+        JP2S_Extensions.Close()
     End Sub
 
     Private Sub InitializeBJCAForm()
@@ -11841,13 +11853,20 @@ Public Class BJCAMainForm
 
     End Sub
 
-    Private Sub ProcessHistoryfile(ghf As GameHistoryFile, Optional Row As Long = 15, Optional NumberOfShoe As Long = 5)
+
+
+
+
+
+    Private Async Sub ProcessHistoryfile(ghf As GameHistoryFile, JP2S_Extensions As BJCA_JP2S_ExtensionsForm, Optional Row As Long = 15, Optional NumberOfShoe As Long = 5)
         Dim Table As String
         Dim shoeCode As Long
         Dim RoundId As Long
         Dim cards As MatchCollection
         Dim i As Long
-        Dim Results As BJCA
+        Dim jp2s_Results As BJCA
+        'Dim jp2s_Task As New Task
+
         Table = ""
         shoeCode = 0
         RoundId = 0
@@ -11868,13 +11887,17 @@ Public Class BJCAMainForm
             Do
                 DealCards(cards)
                 'evaluate
-                Results = New BJCA
+                jp2s_Results = New BJCA
                 Rules.Shoe = CloneObject(FormRules.ForcedShoe)
-                Results.BJCA(Rules)
-                ghf.WriteNetEV(Row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV)
+                'Threading.Thread.
+                'Dim jp2s_Task As Threading.Thread = New Threading.Thread(New Threading.ThreadStart(AddressOf evaluate_Task))
+                'Await jp2s_Task
+                ghf.WriteNetEV(Row, jp2s_Results.TD.GameEVs.NetGameEV, jp2s_Results.TC.GameEVs.NetGameEV, jp2s_Results.Opt.GameEVs.NetGameEV, jp2s_Results.Opt.GameEVs.NetGameEV)
                 ghf.getRow(Row, Table, shoeCode, RoundId, cards)
                 Row = Row + 1
-            Loop Until shoeCode > 0
+                Application.DoEvents()
+            Loop Until shoeCode > 0 Or JP2S_Extensions.AbortProcess
+            If JP2S_Extensions.AbortProcess Then Exit For
         Next i
         ghf.SaveCloseFile()
     End Sub

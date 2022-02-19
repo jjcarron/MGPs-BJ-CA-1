@@ -9,7 +9,7 @@ Public Class GameHistoryFile
     Dim xlWorkBook As Excel.Workbook
     Dim xlWorkSheet As Excel.Worksheet
     Public Function OpenFile(name As String) As Boolean
-        xlApp = New Excel.ApplicationClass
+        xlApp = New Excel.Application
         Try
             xlWorkBook = xlApp.Workbooks.Open(name)
             xlWorkSheet = xlWorkBook.Worksheets("Data")

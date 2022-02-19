@@ -6,19 +6,32 @@ Public Class BJCA_JP2S_ExtensionsForm
     Dim jp2s_Path As String
     Dim ghf As New GameHistoryFile
     Dim fileOK As Boolean
+    Dim Aborted As Boolean
+    Dim Shoe As Long
+    Dim Row As Long
 
+    Dim ExtensionResult As eExtensions
 
+    Public Enum eExtensions
+        undefined = 0
+        ignoreExtensions = 1
+        processHistoryFile = 2
+        Abort = 3
+    End Enum
     Public Function Exists() As Boolean
         jp2s_Path = CurDir() + JP2S_SUBPATH
         Exists = My.Computer.FileSystem.DirectoryExists(jp2s_Path)
     End Function
     Private Sub Ok_Click(sender As Object, e As EventArgs) Handles Ok.Click
-        Me.DialogResult = DialogResult.OK
-        Me.Close()
+        ExtensionResult = eExtensions.ignoreExtensions
     End Sub
 
     Private Sub Read_Click(sender As Object, e As EventArgs) Handles Read.Click
         Dim ofd As New OpenFileDialog
+
+        Abort.Enabled = True
+        Ok.Enabled = False
+
         ofd.CheckFileExists = True
         ofd.CheckPathExists = True
         ofd.AddExtension = True
@@ -41,11 +54,15 @@ Public Class BJCA_JP2S_ExtensionsForm
             End If
         End If
         ofd.Dispose()
-        Me.DialogResult = DialogResult.Abort
-        Me.Close()
+        ExtensionResult = eExtensions.processHistoryFile
     End Sub
 
-    Public ReadOnly Property HistoryFile() As GameHistoryFile
+    Private Sub Abort_Click(sender As Object, e As EventArgs) Handles Abort.Click
+        Aborted = True
+        ExtensionResult = eExtensions.Abort
+    End Sub
+
+    Public ReadOnly Property HistoryFile As GameHistoryFile
         Get
             If fileOK Then
                 Return ghf
@@ -54,4 +71,20 @@ Public Class BJCA_JP2S_ExtensionsForm
             End If
         End Get
     End Property
+
+    Public ReadOnly Property AbortProcess As Boolean
+        Get
+            Return Aborted
+        End Get
+    End Property
+
+    Public ReadOnly Property Result As eExtensions
+        Get
+            Return ExtensionResult
+        End Get
+    End Property
+
+    Private Sub BJCA_JP2S_ExtensionsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Abort.Enabled = False
+    End Sub
 End Class
