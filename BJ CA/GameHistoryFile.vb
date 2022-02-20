@@ -80,4 +80,9 @@ Public Class GameHistoryFile
         xlWorkSheet.Cells(Row, column).value = fourthColumnEV
     End Sub
 
+    Public ReadOnly Property FilePath() As String
+        Get
+            Return xlWorkBook.FullName
+        End Get
+    End Property
 End Class

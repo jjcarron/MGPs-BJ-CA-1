@@ -5284,32 +5284,7 @@ Public Class BJCAMainForm
 #End Region
 
 #Region " Main Form General Methods "
-    Private Sub showJP2S_ExtensionDlg(ByRef JP2S_Extensions As BJCA_JP2S_ExtensionsForm)
-        JP2S_Extensions.ShowDialog()
-    End Sub
 
-    Private Function getGameHistoryFile(JP2S_Extensions As BJCA_JP2S_ExtensionsForm) As GameHistoryFile
-        Dim ofd As New OpenFileDialog
-        Dim ghf As New GameHistoryFile
-
-        ofd.CheckFileExists = True
-        ofd.CheckPathExists = True
-        ofd.AddExtension = True
-        ofd.DefaultExt = ".xlsx"
-        ofd.FileName = "Games.xlsx"
-        ofd.InitialDirectory = My.Computer.FileSystem.CurrentDirectory + "\JP2S\"
-        ofd.Filter = "Game Files (*.xlsx)|*.xlsx"
-        ofd.ValidateNames = True
-
-        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            If ghf.OpenFile(ofd.FileName) Then
-                getGameHistoryFile = ghf
-            End If
-        Else
-            MsgBox("The file: " + GetFileName(ofd.FileName) + " is not a valid Forced Shoe file.")
-        End If
-        ofd.Dispose()
-    End Function
     Private Sub CalculateNow()
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
@@ -11882,29 +11857,57 @@ Try_Again:
 
     End Sub
 
+    Private Sub showJP2S_ExtensionDlg(ByRef JP2S_Extensions As BJCA_JP2S_ExtensionsForm)
+        JP2S_Extensions.ShowDialog()
+    End Sub
 
-    Private Sub ProcessHistoryfile(ghf As GameHistoryFile, JP2S_Extensions As BJCA_JP2S_ExtensionsForm, Optional Row As Long = 15, Optional NumberOfShoe As Long = 5)
+    Private Function getGameHistoryFile(JP2S_Extensions As BJCA_JP2S_ExtensionsForm) As GameHistoryFile
+        Dim ofd As New OpenFileDialog
+        Dim ghf As New GameHistoryFile
+
+        ofd.CheckFileExists = True
+        ofd.CheckPathExists = True
+        ofd.AddExtension = True
+        ofd.DefaultExt = ".xlsx"
+        ofd.FileName = "Games.xlsx"
+        ofd.InitialDirectory = My.Computer.FileSystem.CurrentDirectory + "\JP2S\"
+        ofd.Filter = "Game Files (*.xlsx)|*.xlsx"
+        ofd.ValidateNames = True
+
+        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            If ghf.OpenFile(ofd.FileName) Then
+                getGameHistoryFile = ghf
+            End If
+        Else
+            MsgBox("The file: " + GetFileName(ofd.FileName) + " is not a valid Forced Shoe file.")
+        End If
+        ofd.Dispose()
+        getGameHistoryFile = ghf
+    End Function
+    Private Sub ProcessHistoryfile(ghf As GameHistoryFile, JP2S_Extensions As BJCA_JP2S_ExtensionsForm)
         Dim Table As String
         Dim shoeCode As Long
         Dim RoundId As Long
         Dim cards As MatchCollection
         Dim i As Long
         Dim Results As BJCA
-
+        Dim row As Long
+        Dim NumberOfShoe As Long
 
         Table = ""
         shoeCode = 0
         RoundId = 0
         cards = Nothing
         InitializeAnalysis()
-
+        Row = JP2S_Extensions.firstRow
+        NumberOfShoe = JP2S_Extensions.NumberOfShoe
         ghf.WriteTitles("TDS NetEV", "2CDS NetEV", "CDS NetEV", "FS NetEV")
         'get the Row of the next shoe
         Do
             ghf.getRow(Row, Table, shoeCode, RoundId, cards)
-            Row = Row + 1
+            row += 1
         Loop Until shoeCode > 0
-        Row = Row - 1
+        row -= 1
 
         'process shoes
         For i = 1 To NumberOfShoe
@@ -11915,9 +11918,10 @@ Try_Again:
                 Rules.Shoe = CloneObject(FormRules.ForcedShoe)
                 Results = New BJCA
                 Results.BJCA(Rules)
-                ghf.WriteNetEV(Row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV)
+                JP2S_Extensions.updateStatusBar(ghf.FilePath, Row, Table, shoeCode, RoundId, "", 0, 0, "Composition Strategy", Results.Opt.GameEVs.NetGameEV)
+                ghf.WriteNetEV(Row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Forced.GameEVs.NetGameEV)
                 ghf.getRow(Row, Table, shoeCode, RoundId, cards)
-                Row = Row + 1
+                row += 1
                 Application.DoEvents()
             Loop Until shoeCode > 0 Or JP2S_Extensions.AbortProcess
             If JP2S_Extensions.AbortProcess Then Exit For
