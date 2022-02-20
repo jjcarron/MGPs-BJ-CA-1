@@ -1,6 +1,8 @@
 ﻿Imports BJ_CA.BJCAShared
 Imports BJ_CA.GameHistoryFile
-Public Class BJCA_JP2S_ExtensionsForm
+Imports BJ_CA.JP2S_CardCounter
+
+<Serializable()> Public Class JP2S_ExtensionsForm
 
     Const JP2S_SUBPATH As String = "\JP2S"
     Dim jp2s_Path As String
@@ -11,27 +13,30 @@ Public Class BJCA_JP2S_ExtensionsForm
     Dim Row As Long
     Dim CanClose As Boolean
     Dim InProgress As Boolean
+    Dim ExtensionResult As Extensions
+    Public CountStrategies As Count_Strategies
+    Public FirstRow As Long
+    Public NumberOfShoe As Long
 
-    Dim ExtensionResult As eExtensions
-
-    Public Enum eExtensions
-        undefined = 0
-        ignoreExtensions = 1
-        processHistoryFile = 2
-        Abort = 3
+    Public Enum Extensions
+        undefined
+        ignoreExtensions
+        processHistoryFile
+        Abort
     End Enum
     Public Function Exists() As Boolean
         jp2s_Path = CurDir() + JP2S_SUBPATH
         Exists = My.Computer.FileSystem.DirectoryExists(jp2s_Path)
     End Function
     Private Sub Ok_Click(sender As Object, e As EventArgs) Handles Ok.Click
-        ExtensionResult = eExtensions.ignoreExtensions
+        ExtensionResult = Extensions.ignoreExtensions
         Close()
     End Sub
 
     Private Sub Read_Click(sender As Object, e As EventArgs) Handles Read.Click
-        ExtensionResult = eExtensions.processHistoryFile
+        ExtensionResult = Extensions.processHistoryFile
         StartProcessing()
+        ReadExtensionsParamers()
         'wait for selection
         Do While InProgress
             ' wait for answer
@@ -44,7 +49,7 @@ Public Class BJCA_JP2S_ExtensionsForm
     Private Sub Abort_Click(sender As Object, e As EventArgs) Handles Abort.Click
         Aborted = True
         Abort.Enabled = False
-        ExtensionResult = eExtensions.Abort
+        ExtensionResult = Extensions.Abort
     End Sub
 
     Public ReadOnly Property HistoryFile As GameHistoryFile
@@ -63,7 +68,7 @@ Public Class BJCA_JP2S_ExtensionsForm
         End Get
     End Property
 
-    Public ReadOnly Property Result As eExtensions
+    Public ReadOnly Property Result As Extensions
         Get
             Return ExtensionResult
         End Get
@@ -81,7 +86,7 @@ Public Class BJCA_JP2S_ExtensionsForm
         Abort.Enabled = False
         Read.Enabled = True
         Ok.Enabled = True
-        ExtensionResult = eExtensions.undefined
+        ExtensionResult = Extensions.undefined
     End Sub
 
     Private Sub StartProcessing()
@@ -154,24 +159,39 @@ Public Class BJCA_JP2S_ExtensionsForm
         CountingStrategy_GroupBox.Enabled = True
     End Sub
 
-    Public ReadOnly Property firstRow As Long
-        Get
-            Dim row As Long
-            row = Convert.ToInt64(FisrtRowValue.Text)
-            If row < 2 Then row = 2
-            Return row
-        End Get
-    End Property
 
-    Public ReadOnly Property NumberOfShoe As Long
-        Get
-            Dim n As Long
-            n = Convert.ToInt64(NumberOfShoes.Text)
-            If n < 1 Then n = 1
-            Return n
-        End Get
-    End Property
+
+    Private Sub ReadExtensionsParamers()
+        CountStrategies = 0
+        If HILO_CheckBox.Checked Then CountStrategies += Count_Strategies.Hi_Lo
+        If KO_CheckBox.Checked Then CountStrategies += Count_Strategies.K_O
+        If HIOpt1_CheckBox.Checked Then CountStrategies += Count_Strategies.Hi_Opt1
+        If HIOpt2_CheckBox.Checked Then CountStrategies += Count_Strategies.Hi_Opt2
+        If Halves_CheckBox.Checked Then CountStrategies += Count_Strategies.Halves
+        If Omega2_CheckBox.Checked Then CountStrategies += Count_Strategies.Omega_2
+        If RedSeven_CheckBox.Checked Then CountStrategies += Count_Strategies.Red_Seven
+        If Zen_CheckBox.Checked Then CountStrategies += Count_Strategies.Zen
 
 
 
+
+    End Sub
+
+    Private Sub FisrtRowValue_Leave(sender As Object, e As EventArgs) Handles FisrtRowValue.Leave
+        FirstRow = Convert.ToInt64(FisrtRowValue.Text)
+        If FirstRow < 2 Then FirstRow = 2
+    End Sub
+
+    Private Sub NumberOfShoes_Leave(sender As Object, e As EventArgs) Handles NumberOfShoes.Leave
+        NumberOfShoe = Convert.ToInt64(NumberOfShoes.Text)
+        If NumberOfShoe < 1 Then NumberOfShoe = 1
+    End Sub
+
+    Private Sub SaveExtensions_Click(sender As Object, e As EventArgs) Handles Save_Extensions.Click
+
+    End Sub
+
+    Private Sub LoadExtensions_Click(sender As Object, e As EventArgs) Handles er.Click
+
+    End Sub
 End Class

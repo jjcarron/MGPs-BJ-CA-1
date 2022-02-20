@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class BJCA_JP2S_ExtensionsForm
+Partial Class JP2S_ExtensionsForm
     Inherits System.Windows.Forms.Form
 
     'Form remplace la méthode Dispose pour nettoyer la liste des composants.
@@ -71,6 +71,8 @@ Partial Class BJCA_JP2S_ExtensionsForm
         Me.CountingStrategy_GroupBox = New System.Windows.Forms.GroupBox()
         Me.Clear_Button = New System.Windows.Forms.Button()
         Me.Select_Button = New System.Windows.Forms.Button()
+        Me.Save_Extensions = New System.Windows.Forms.Button()
+        Me.er = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         Me.StatusStrip2.SuspendLayout()
         Me.Data_GroupBox.SuspendLayout()
@@ -516,7 +518,27 @@ Partial Class BJCA_JP2S_ExtensionsForm
         Me.Select_Button.Text = "Select All"
         Me.Select_Button.UseVisualStyleBackColor = True
         '
-        'BJCA_JP2S_ExtensionsForm
+        'Save_Extensions
+        '
+        Me.Save_Extensions.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Save_Extensions.Location = New System.Drawing.Point(869, 202)
+        Me.Save_Extensions.Name = "Save_Extensions"
+        Me.Save_Extensions.Size = New System.Drawing.Size(137, 23)
+        Me.Save_Extensions.TabIndex = 0
+        Me.Save_Extensions.Text = "Save Extensions"
+        Me.Save_Extensions.UseVisualStyleBackColor = True
+        '
+        'er
+        '
+        Me.er.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.er.Location = New System.Drawing.Point(869, 246)
+        Me.er.Name = "er"
+        Me.er.Size = New System.Drawing.Size(137, 23)
+        Me.er.TabIndex = 0
+        Me.er.Text = "Load Extensions"
+        Me.er.UseVisualStyleBackColor = True
+        '
+        'JP2S_ExtensionsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -527,11 +549,13 @@ Partial Class BJCA_JP2S_ExtensionsForm
         Me.Controls.Add(Me.StatusStrip2)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.Close_Button)
+        Me.Controls.Add(Me.er)
+        Me.Controls.Add(Me.Save_Extensions)
         Me.Controls.Add(Me.Abort)
         Me.Controls.Add(Me.Read)
         Me.Controls.Add(Me.Ok)
         Me.Controls.Add(Me.CountingStrategy_GroupBox)
-        Me.Name = "BJCA_JP2S_ExtensionsForm"
+        Me.Name = "JP2S_ExtensionsForm"
         Me.Text = "JP2S_Extensions"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
@@ -599,4 +623,6 @@ Partial Class BJCA_JP2S_ExtensionsForm
     Friend WithEvents CountingStrategy_GroupBox As GroupBox
     Friend WithEvents Clear_Button As Button
     Friend WithEvents Select_Button As Button
+    Friend WithEvents Save_Extensions As Button
+    Friend WithEvents er As Button
 End Class

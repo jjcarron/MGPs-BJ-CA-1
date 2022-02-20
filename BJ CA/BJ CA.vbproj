@@ -257,10 +257,11 @@
     <Compile Include="BJCATextForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BJCA_JP2S_ExtensionsForm.Designer.vb">
-      <DependentUpon>BJCA_JP2S_ExtensionsForm.vb</DependentUpon>
+    <Compile Include="JP2S_CardCounter.vb" />
+    <Compile Include="JP2S_ExtensionsForm.Designer.vb">
+      <DependentUpon>JP2S_ExtensionsForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="BJCA_JP2S_ExtensionsForm.vb">
+    <Compile Include="JP2S_ExtensionsForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Game.vb" />
@@ -303,8 +304,8 @@
     <EmbeddedResource Include="BJCATextForm.resx">
       <DependentUpon>BJCATextForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BJCA_JP2S_ExtensionsForm.resx">
-      <DependentUpon>BJCA_JP2S_ExtensionsForm.vb</DependentUpon>
+    <EmbeddedResource Include="JP2S_ExtensionsForm.resx">
+      <DependentUpon>JP2S_ExtensionsForm.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="ManualNotes.vb">
