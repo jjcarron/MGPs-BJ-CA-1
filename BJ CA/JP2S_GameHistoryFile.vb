@@ -3,7 +3,7 @@ Imports BJ_CA.BJCAShared
 Imports System.Text.RegularExpressions
 Imports Microsoft.Office.Interop.Excel
 
-Public Class GameHistoryFile
+Public Class JP2S_GameHistoryFile
     Dim Open As Boolean
     Dim xlApp As Excel.Application
     Dim xlWorkBook As Excel.Workbook
@@ -53,11 +53,13 @@ Public Class GameHistoryFile
         End Try
     End Function
 
-    Private Const FirtsColumn As Long = 7
-    Public Sub WriteTitles(FirstcolumnTitle As String, Optional SecondColumnTitle As String = "", Optional thirdColumnTitle As String = "", Optional fourthColumnTitle As String = "")
+    Private Const NetEVFirstColumn As Long = 7
+    Private Const NetEVColumns As Long = 4
+    Private Const CountFirstColumn As Long = NetEVFirstColumn + NetEVColumns + 1
+    Public Sub WriteNetEVTitles(FirstcolumnTitle As String, Optional SecondColumnTitle As String = "", Optional thirdColumnTitle As String = "", Optional fourthColumnTitle As String = "")
         Dim column As Long
 
-        column = FirtsColumn
+        column = NetEVFirstColumn
 
         xlWorkSheet.Cells(1, column).Value = FirstcolumnTitle
         column = column + 1
@@ -70,7 +72,7 @@ Public Class GameHistoryFile
 
     Public Sub WriteNetEV(Row As Long, FirstcolumnEV As Double, Optional SecondColumnEV As Double = 0, Optional thirdColumnEV As Double = 0, Optional fourthColumnEV As Double = 0)
         Dim column As Long
-        column = FirtsColumn
+        column = NetEVFirstColumn
         xlWorkSheet.Cells(Row, column).value = FirstcolumnEV
         column = column + 1
         xlWorkSheet.Cells(Row, column).value = SecondColumnEV
@@ -79,7 +81,26 @@ Public Class GameHistoryFile
         column = column + 1
         xlWorkSheet.Cells(Row, column).value = fourthColumnEV
     End Sub
+    Public Sub WriteCountTitles(CardCounter As JP2S_CardCounter)
+        Dim column As Long
+        For column = CountFirstColumn To CountFirstColumn + JP2S_CardCounter.Count_Strategies.NbCountStrategies - 1
+            xlWorkSheet.Cells(1, column).Value = CardCounter.CountStrategyName(column - CountFirstColumn)
+        Next column
+    End Sub
 
+    Public Sub WriteRunningCount(Row As Long, CardCounter As JP2S_CardCounter)
+        Dim column As Long
+        For column = CountFirstColumn To CountFirstColumn + JP2S_CardCounter.Count_Strategies.NbCountStrategies - 1
+            xlWorkSheet.Cells(Row, column).Value = CardCounter.RunningCount(column - CountFirstColumn)
+        Next column
+    End Sub
+
+    Public Sub WriteTrueCount(Row As Long, CardCounter As JP2S_CardCounter, CardLeft As Integer, Optional CardsPerDeck As Integer = 52)
+        Dim column As Long
+        For column = CountFirstColumn To CountFirstColumn + JP2S_CardCounter.Count_Strategies.NbCountStrategies - 1
+            xlWorkSheet.Cells(Row, column).Value = CardCounter.RunningCount(column - CountFirstColumn) / CardLeft / CardsPerDeck
+        Next column
+    End Sub
     Public ReadOnly Property FilePath() As String
         Get
             Return xlWorkBook.FullName

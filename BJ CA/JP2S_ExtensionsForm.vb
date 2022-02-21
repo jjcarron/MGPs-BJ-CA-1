@@ -1,12 +1,12 @@
 ﻿Imports BJ_CA.BJCAShared
-Imports BJ_CA.GameHistoryFile
+Imports BJ_CA.JP2S_GameHistoryFile
 Imports BJ_CA.JP2S_CardCounter
 
 <Serializable()> Public Class JP2S_ExtensionsForm
 
     Const JP2S_SUBPATH As String = "\JP2S"
     Dim jp2s_Path As String
-    Dim ghf As New GameHistoryFile
+    Dim ghf As New JP2S_GameHistoryFile
     Dim fileOK As Boolean
     Dim Aborted As Boolean
     Dim Shoe As Long
@@ -52,7 +52,7 @@ Imports BJ_CA.JP2S_CardCounter
         ExtensionResult = Extensions.Abort
     End Sub
 
-    Public ReadOnly Property HistoryFile As GameHistoryFile
+    Public ReadOnly Property HistoryFile As JP2S_GameHistoryFile
         Get
             If fileOK Then
                 Return ghf
@@ -159,22 +159,16 @@ Imports BJ_CA.JP2S_CardCounter
         CountingStrategy_GroupBox.Enabled = True
     End Sub
 
-
-
     Private Sub ReadExtensionsParamers()
         CountStrategies = 0
-        If HILO_CheckBox.Checked Then CountStrategies += Count_Strategies.Hi_Lo
-        If KO_CheckBox.Checked Then CountStrategies += Count_Strategies.K_O
-        If HIOpt1_CheckBox.Checked Then CountStrategies += Count_Strategies.Hi_Opt1
-        If HIOpt2_CheckBox.Checked Then CountStrategies += Count_Strategies.Hi_Opt2
-        If Halves_CheckBox.Checked Then CountStrategies += Count_Strategies.Halves
-        If Omega2_CheckBox.Checked Then CountStrategies += Count_Strategies.Omega_2
-        If RedSeven_CheckBox.Checked Then CountStrategies += Count_Strategies.Red_Seven
-        If Zen_CheckBox.Checked Then CountStrategies += Count_Strategies.Zen
-
-
-
-
+        If HILO_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Hi_Lo
+        If KO_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.K_O
+        If HIOpt1_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Hi_Opt1
+        If HIOpt2_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Hi_Opt2
+        If Halves_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Halves
+        If Omega2_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Omega_2
+        If RedSeven_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Red_Seven
+        If Zen_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Zen
     End Sub
 
     Private Sub FisrtRowValue_Leave(sender As Object, e As EventArgs) Handles FisrtRowValue.Leave

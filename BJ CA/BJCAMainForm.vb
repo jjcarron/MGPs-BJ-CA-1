@@ -2,7 +2,7 @@ Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.IO
 Imports BJ_CA.BJCAShared
 Imports System.Diagnostics.Process
-Imports BJ_CA.GameHistoryFile
+Imports BJ_CA.JP2S_GameHistoryFile
 Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 
@@ -5289,7 +5289,7 @@ Public Class BJCAMainForm
         Dim Results As New BJCA
         Dim ResultsForm As New BJCAResultsForm
         Dim JP2S_Extensions As New JP2S_ExtensionsForm
-        Dim ghf As GameHistoryFile
+        Dim ghf As JP2S_GameHistoryFile
         Dim jp2s_DlgTask As Task
 
         If JP2S_Extensions.Exists() Then
@@ -11808,6 +11808,7 @@ Try_Again:
 
 #Region "JP2S Extensions"
 
+    Dim CardCounter As New JP2S_CardCounter
     Private Sub InitializeAnalysis()
         GetFormRules()
         FormRules.General.UseForcedShoe = True
@@ -11815,12 +11816,12 @@ Try_Again:
     End Sub
     Private Sub NewShoe()
         FormRules.ForcedShoe.Reset(FormRules.General.NDecks)
+        CardCounter.CounterReset()
     End Sub
 
-    Private Sub ProcessShoe(ghf As GameHistoryFile)
+    Private Sub ProcessShoe(ghf As JP2S_GameHistoryFile)
         NewShoe()
     End Sub
-
     Private Sub DealCards(cards As MatchCollection)
         Dim card As Match
         Dim suitStr As String
@@ -11852,8 +11853,8 @@ Try_Again:
                     CardValue = Convert.ToInt32(CardStr)
             End Select
             FormRules.ForcedShoe.DealSuited(CardValue, suit)
+            CardCounter.Count(CardValue)
         Next
-
 
     End Sub
 
@@ -11861,9 +11862,9 @@ Try_Again:
         JP2S_Extensions.ShowDialog()
     End Sub
 
-    Private Function getGameHistoryFile(JP2S_Extensions As JP2S_ExtensionsForm) As GameHistoryFile
+    Private Function getGameHistoryFile(JP2S_Extensions As JP2S_ExtensionsForm) As JP2S_GameHistoryFile
         Dim ofd As New OpenFileDialog
-        Dim ghf As New GameHistoryFile
+        Dim ghf As New JP2S_GameHistoryFile
 
         ofd.CheckFileExists = True
         ofd.CheckPathExists = True
@@ -11884,7 +11885,7 @@ Try_Again:
         ofd.Dispose()
         getGameHistoryFile = ghf
     End Function
-    Private Sub ProcessHistoryfile(ghf As GameHistoryFile, JP2S_Extensions As JP2S_ExtensionsForm)
+    Private Sub ProcessHistoryfile(ghf As JP2S_GameHistoryFile, JP2S_Extensions As JP2S_ExtensionsForm)
         Dim Table As String
         Dim shoeCode As Long
         Dim RoundId As Long
@@ -11901,7 +11902,8 @@ Try_Again:
         InitializeAnalysis()
         row = JP2S_Extensions.firstRow
         NumberOfShoe = JP2S_Extensions.NumberOfShoe
-        ghf.WriteTitles("TDS NetEV", "2CDS NetEV", "CDS NetEV", "FS NetEV")
+        ghf.WriteNetEVTitles("TDS NetEV", "2CDS NetEV", "CDS NetEV", "FS NetEV")
+        ghf.WriteCountTitles(CardCounter)
         'get the Row of the next shoe
         Do
             ghf.getRow(row, Table, shoeCode, RoundId, cards)
@@ -11911,15 +11913,16 @@ Try_Again:
 
         'process shoes
         For i = 1 To NumberOfShoe
-            FormRules.ForcedShoe.Reset(FormRules.General.NDecks)
+            NewShoe()
             Do
                 DealCards(cards)
                 'evaluate
-                Rules.Shoe = CloneObject(FormRules.ForcedShoe)
-                Results = New BJCA
-                Results.BJCA(Rules)
-                JP2S_Extensions.updateStatusBar(ghf.FilePath, row, Table, shoeCode, RoundId, "", 0, 0, "Composition Strategy", Results.Opt.GameEVs.NetGameEV)
-                ghf.WriteNetEV(row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Forced.GameEVs.NetGameEV)
+                'Rules.Shoe = CloneObject(FormRules.ForcedShoe)
+                'Results = New BJCA
+                'Results.BJCA(Rules)
+                JP2S_Extensions.updateStatusBar(ghf.FilePath, row, Table, shoeCode, RoundId, CardCounter.CountStrategyName(0), CardCounter.RunningCount(0), CardCounter.RunningCount(0) / Rules.Shoe.CardsLeft / 52, "Composition Strategy", 0) 'Results.Opt.GameEVs.NetGameEV)
+                'ghf.WriteNetEV(row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Forced.GameEVs.NetGameEV)
+                ghf.WriteTrueCount(row, CardCounter, Rules.Shoe.CardsLeft)
                 ghf.getRow(row, Table, shoeCode, RoundId, cards)
                 row += 1
                 Application.DoEvents()

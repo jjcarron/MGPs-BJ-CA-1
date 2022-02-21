@@ -264,8 +264,7 @@
     <Compile Include="JP2S_ExtensionsForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Game.vb" />
-    <Compile Include="GameHistoryFile.vb" />
+    <Compile Include="JP2S_GameHistoryFile.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
