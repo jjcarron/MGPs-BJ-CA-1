@@ -11903,7 +11903,8 @@ Try_Again:
         row = JP2S_Extensions.firstRow
         NumberOfShoe = JP2S_Extensions.NumberOfShoe
         ghf.WriteNetEVTitles("TDS NetEV", "2CDS NetEV", "CDS NetEV", "FS NetEV")
-        ghf.WriteCountTitles(CardCounter)
+        ghf.WriteTrueCountTitles(CardCounter)
+        ghf.WriteRunningCountTitles(CardCounter)
         'get the Row of the next shoe
         Do
             ghf.getRow(row, Table, shoeCode, RoundId, cards)
@@ -11920,11 +11921,13 @@ Try_Again:
                 'Rules.Shoe = CloneObject(FormRules.ForcedShoe)
                 'Results = New BJCA
                 'Results.BJCA(Rules)
-                JP2S_Extensions.updateStatusBar(ghf.FilePath, row, Table, shoeCode, RoundId, CardCounter.CountStrategyName(0), CardCounter.RunningCount(0), CardCounter.RunningCount(0) / Rules.Shoe.CardsLeft / 52, "Composition Strategy", 0) 'Results.Opt.GameEVs.NetGameEV)
+                JP2S_Extensions.updateStatusBar(ghf.FilePath, row, Table, shoeCode, RoundId, CardCounter.CountStrategyName(0), CardCounter.RunningCount(0), CardCounter.RunningCount(0) / Rules.Shoe.CardsLeft * 52, "Composition Strategy", 0) 'Results.Opt.GameEVs.NetGameEV)
                 'ghf.WriteNetEV(row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Forced.GameEVs.NetGameEV)
                 ghf.WriteTrueCount(row, CardCounter, Rules.Shoe.CardsLeft)
-                ghf.getRow(row, Table, shoeCode, RoundId, cards)
+                ghf.WriteRunningCount(row, CardCounter)
+
                 row += 1
+                ghf.getRow(row, Table, shoeCode, RoundId, cards)
                 Application.DoEvents()
             Loop Until shoeCode > 0 Or JP2S_Extensions.AbortProcess
             If JP2S_Extensions.AbortProcess Then Exit For

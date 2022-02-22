@@ -34,16 +34,18 @@ Imports BJ_CA.JP2S_CardCounter
     End Sub
 
     Private Sub Read_Click(sender As Object, e As EventArgs) Handles Read.Click
-        ExtensionResult = Extensions.processHistoryFile
-        StartProcessing()
-        ReadExtensionsParamers()
-        'wait for selection
-        Do While InProgress
-            ' wait for answer
-            Threading.Thread.Sleep(100)
-            Application.DoEvents()
-        Loop
-        EndProcessing()
+        If Not InProgress Then
+            ExtensionResult = Extensions.processHistoryFile
+            StartProcessing()
+            ReadExtensionsParamers()
+            'wait for selection
+            Do While InProgress
+                ' wait for answer
+                Threading.Thread.Sleep(100)
+                Application.DoEvents()
+            Loop
+            EndProcessing()
+        End If
     End Sub
 
     Private Sub Abort_Click(sender As Object, e As EventArgs) Handles Abort.Click
@@ -107,6 +109,7 @@ Imports BJ_CA.JP2S_CardCounter
 
     Public Sub EndOfProcessing()
         InProgress = False
+        ExtensionResult = Extensions.undefined
     End Sub
 
     Public Sub updateStatusBar(ByRef filePath As String, Row As Long, Table As String, Shoe As Long, RoundId As Long, CountStrategy As String, RunningCount As Long, TrueCount As Double, Strategy As String, NetEV As Double)
@@ -169,6 +172,9 @@ Imports BJ_CA.JP2S_CardCounter
         If Omega2_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Omega_2
         If RedSeven_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Red_Seven
         If Zen_CheckBox.Checked Then CountStrategies += Count_Strategies_Flags.Zen
+        FirstRow = Convert.ToInt64(FisrtRowValue.Text)
+        NumberOfShoe = Convert.ToInt64(NumberOfShoes.Text)
+        If NumberOfShoe < 1 Then NumberOfShoe = 1
     End Sub
 
     Private Sub FisrtRowValue_Leave(sender As Object, e As EventArgs) Handles FisrtRowValue.Leave
