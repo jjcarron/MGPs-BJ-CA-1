@@ -11893,44 +11893,54 @@ Try_Again:
         Dim i As Long
         Dim Results As BJCA
         Dim row As Long
+        Dim BetNextRow As Boolean
         Dim NumberOfShoe As Long
-
+        Dim CountOnly As Boolean
         Table = ""
         shoeCode = 0
         RoundId = 0
         cards = Nothing
         InitializeAnalysis()
-        row = JP2S_Extensions.firstRow
+        row = JP2S_Extensions.FirstRow
         NumberOfShoe = JP2S_Extensions.NumberOfShoe
+        CountOnly = JP2S_Extensions.CountOnlyAnalysis
         ghf.WriteNetEVTitles("TDS NetEV", "2CDS NetEV", "CDS NetEV", "FS NetEV")
         ghf.WriteTrueCountTitles(CardCounter)
         ghf.WriteRunningCountTitles(CardCounter)
         'get the Row of the next shoe
         Do
-            ghf.getRow(row, Table, shoeCode, RoundId, cards)
+            ghf.getRow(row, Table, shoeCode, RoundId, cards, BetNextRow)
             row += 1
         Loop Until shoeCode > 0
         row -= 1
-
+        Dim x
         'process shoes
         For i = 1 To NumberOfShoe
             NewShoe()
+            x = CardCounter.RunningCount(7)
+
             Do
                 DealCards(cards)
                 'evaluate
-                'Rules.Shoe = CloneObject(FormRules.ForcedShoe)
-                'Results = New BJCA
-                'Results.BJCA(Rules)
-                JP2S_Extensions.updateStatusBar(ghf.FilePath, row, Table, shoeCode, RoundId, CardCounter.CountStrategyName(0), CardCounter.RunningCount(0), CardCounter.RunningCount(0) / Rules.Shoe.CardsLeft * 52, "Composition Strategy", 0) 'Results.Opt.GameEVs.NetGameEV)
-                'ghf.WriteNetEV(row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Forced.GameEVs.NetGameEV)
+                Rules.Shoe = CloneObject(FormRules.ForcedShoe)
+
+                JP2S_Extensions.updateStatusBarValues(ghf.FilePath, row, Table, shoeCode, RoundId, CardCounter.CountStrategyName(0), CardCounter.RunningCount(0), CardCounter.RunningCount(0) / Rules.Shoe.CardsLeft * 52, "Composition Strategy", 0) 'Results.Opt.GameEVs.NetGameEV)
+                Application.DoEvents()
                 ghf.WriteTrueCount(row, CardCounter, Rules.Shoe.CardsLeft)
                 ghf.WriteRunningCount(row, CardCounter)
 
+                If CountOnly Then
+                ElseIf BetNextRow Then
+                    Results = New BJCA
+                    Results.BJCA(Rules)
+                    ghf.WriteNetEV(row, Results.TD.GameEVs.NetGameEV, Results.TC.GameEVs.NetGameEV, Results.Opt.GameEVs.NetGameEV, Results.Forced.GameEVs.NetGameEV)
+                End If
+
                 row += 1
-                ghf.getRow(row, Table, shoeCode, RoundId, cards)
+                ghf.getRow(row, Table, shoeCode, RoundId, cards, BetNextRow)
                 Application.DoEvents()
-            Loop Until shoeCode > 0 Or JP2S_Extensions.AbortProcess
-            If JP2S_Extensions.AbortProcess Then Exit For
+            Loop Until shoeCode > 0 Or RoundId = 0 Or JP2S_Extensions.AbortProcess
+            If JP2S_Extensions.AbortProcess Or RoundId = 0 Then Exit For
         Next i
         ghf.SaveCloseFile()
     End Sub

@@ -18,6 +18,17 @@ Imports BJ_CA.JP2S_CardCounter
     Public FirstRow As Long
     Public NumberOfShoe As Long
 
+    Dim FileText As String
+    Dim RowVal As Long
+    Dim TableText As String
+    Dim ShoeId As Long
+    Dim RoundId As Long
+    Dim CountStrategyText As String
+    Dim RunningCountVal As Long
+    Dim TrueCountVal As Double
+    Dim StrategyText As String
+    Dim NetEVVal As Double
+
     Public Enum Extensions
         undefined
         ignoreExtensions
@@ -41,7 +52,8 @@ Imports BJ_CA.JP2S_CardCounter
             'wait for selection
             Do While InProgress
                 ' wait for answer
-                Threading.Thread.Sleep(100)
+                Threading.Thread.Sleep(20)
+                If RowVal > 0 Then updateStatusbar() ' ensure that the process is started
                 Application.DoEvents()
             Loop
             EndProcessing()
@@ -112,19 +124,30 @@ Imports BJ_CA.JP2S_CardCounter
         ExtensionResult = Extensions.undefined
     End Sub
 
-    Public Sub updateStatusBar(ByRef filePath As String, Row As Long, Table As String, Shoe As Long, RoundId As Long, CountStrategy As String, RunningCount As Long, TrueCount As Double, Strategy As String, NetEV As Double)
-        FileValue.Text = filePath
-        RowValue.Text = Row
-        If Table.Length > 0 Then TableValue.Text = Table
-        If Shoe > 0 Then ShoeValue.Text = Shoe
-        RoundIdValue.Text = RoundId
-        CountStrategyValue.Text = CountStrategy
-        RunningCountValue.Text = RunningCount
-        TrueCountValue.Text = TrueCount
-        StrategyLabel.Text = Strategy
-        NetEVValue.Text = NetEV
+    Public Sub updateStatusBarValues(ByRef filePath As String, Row As Long, Table As String, Shoe As Long, Round As Long, CountStrategy As String, RunningCount As Long, TrueCount As Double, Strategy As String, NetEV As Double)
+        FileText = filePath
+        RowVal = Row
+        TableText = Table
+        ShoeId = Shoe
+        RoundId = Round
+        CountStrategyText = CountStrategy
+        RunningCountVal = RunningCount
+        TrueCountVal = TrueCount
+        StrategyText = Strategy
+        NetEVVal = NetEV
     End Sub
-
+    Private Sub updateStatusbar()
+        FileValue.Text = FileText
+        RowValue.Text = RowVal
+        If TableText.Length > 0 Then TableValue.Text = TableText
+        If ShoeId > 0 Then ShoeValue.Text = ShoeId
+        RoundIdValue.Text = RoundId
+        CountStrategyValue.Text = CountStrategyText
+        RunningCountValue.Text = RunningCountVal
+        TrueCountValue.Text = TrueCountVal
+        StrategyLabel.Text = StrategyText
+        NetEVValue.Text = NetEVVal
+    End Sub
     Private Sub Select_Button_Click(sender As Object, e As EventArgs) Handles Select_Button.Click
         HILO_CheckBox.CheckState = CheckState.Checked
         KO_CheckBox.CheckState = CheckState.Checked
@@ -194,4 +217,10 @@ Imports BJ_CA.JP2S_CardCounter
     Private Sub LoadExtensions_Click(sender As Object, e As EventArgs) Handles er.Click
 
     End Sub
+
+    Public ReadOnly Property CountOnlyAnalysis As Boolean
+        Get
+            Return CountOnly.Checked
+        End Get
+    End Property
 End Class

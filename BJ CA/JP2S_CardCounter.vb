@@ -28,9 +28,9 @@
         {0, -1, 1, 1, 1, 1, 1, 0, 0, 0, -1},
         {0, -1, 1, 1, 1, 1, 1, 1, 0, 0, -1},
         {0, 0, 0, 1, 1, 1, 1, 0, 0, 0, -1},
-        {0, -2, 1, 1, 2, 2, 1, 1, 0, 0, -2},
+        {0, 0, 1, 1, 2, 2, 1, 1, 0, 0, -2},
         {0, -1, 0.5, 1, 1, 1.5, 1, 0.5, 0, -0.5, -1},
-        {0, -2, 1, 1, 2, 2, 2, 1, 0, -1, -2},
+        {0, 0, 1, 1, 2, 2, 2, 1, 0, -1, -2},
         {0, -1, 1, 1, 1, 1, 1, 0.5, 0, 0, -1},
         {0, -1, 1, 1, 2, 2, 2, 1, 0, 0, -2}
         }
@@ -38,7 +38,7 @@
     Public RunningCount(Count_Strategies.NbCountStrategies - 1) As Double
 
     Public Sub CounterReset()
-        Array.Clear(RunningCount, 0, Count_Strategies.NbCountStrategies - 1)
+        Array.Clear(RunningCount, 0, Count_Strategies.NbCountStrategies)
     End Sub
 
     Public Sub Count(cardValue As Long)

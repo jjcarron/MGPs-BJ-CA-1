@@ -493,9 +493,9 @@ Partial Class JP2S_ExtensionsForm
         Me.CountingStrategy_GroupBox.Controls.Add(Me.Omega2_CheckBox)
         Me.CountingStrategy_GroupBox.Controls.Add(Me.HIOpt2_CheckBox)
         Me.CountingStrategy_GroupBox.Controls.Add(Me.Halves_CheckBox)
-        Me.CountingStrategy_GroupBox.Location = New System.Drawing.Point(270, 32)
+        Me.CountingStrategy_GroupBox.Location = New System.Drawing.Point(261, 32)
         Me.CountingStrategy_GroupBox.Name = "CountingStrategy_GroupBox"
-        Me.CountingStrategy_GroupBox.Size = New System.Drawing.Size(200, 353)
+        Me.CountingStrategy_GroupBox.Size = New System.Drawing.Size(188, 353)
         Me.CountingStrategy_GroupBox.TabIndex = 11
         Me.CountingStrategy_GroupBox.TabStop = False
         Me.CountingStrategy_GroupBox.Text = "Counting Strategies"

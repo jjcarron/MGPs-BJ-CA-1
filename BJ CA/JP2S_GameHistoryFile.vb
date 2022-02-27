@@ -40,13 +40,14 @@ Public Class JP2S_GameHistoryFile
     End Function
 
 
-    Public Function getRow(Row As Long, ByRef Table As String, ByRef shoeCode As Long, ByRef RoundId As Long, ByRef cards As MatchCollection) As Boolean
+    Public Function getRow(Row As Long, ByRef Table As String, ByRef shoeCode As Long, ByRef RoundId As Long, ByRef cards As MatchCollection, ByRef BetNextRow As Boolean) As Boolean
         Try
             Table = xlWorkSheet.Cells(Row, 1).text
             shoeCode = xlWorkSheet.Cells(Row, 2).value2
             RoundId = xlWorkSheet.Cells(Row, 3).value2
             'cards = Regex.Matches(xlWorkSheet.Cells(row, 4).text, "(\'[CDSH][0-9QKAJ]{1,2}\'\,)", RegexOptions.IgnoreCase)
             cards = Regex.Matches(xlWorkSheet.Cells(Row, 4).text, "\'([CDSH])([0-9QKAJ]{1,2})\'\,", RegexOptions.IgnoreCase)
+            BetNextRow = xlWorkSheet.Cells(Row + 1, 5).value2 > 0
             getRow = True
         Catch ex As Exception
             getRow = False
